@@ -3,8 +3,10 @@ import React, { useContext, useEffect } from 'react'
 import { UsuarioContext } from '../context/UsuarioContext';
 
 export default function UsuariosDetail(props) {
+
   const { id, nome, email, altura, peso, setId, setNome, setEmail, setAltura, setPeso, gravarDados } =
     useContext(UsuarioContext);
+    
   useEffect(() => {
     console.log(props.route.params.item);
     if (props.route.params.item.id == "") {

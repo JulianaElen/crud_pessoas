@@ -1,19 +1,19 @@
 import { Alert, StyleSheet, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList } from 'react-native';
 import { ListItem } from '@rneui/base';
 import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
+import { UsuarioContext } from '../context/UsuarioContext';
+
 export default function Usuarios(props) {
 
-    const [usuarios, setUsuarios] = useState([]);
+    const {usuarios, buscarUsuarios} = useContext(UsuarioContext)
+    
     useEffect(() => {
-        fetch("https://backendmobile-j6vq.vercel.app/usuarios")
-            .then((respFetch) => respFetch.json())
-            .then((respJson) => setUsuarios(respJson))
-            .catch((erro) => console.warn(erro))
+        buscarUsuarios();
     }, []);
 
     return (
