@@ -1,5 +1,6 @@
 import React, { createContext, useState } from 'react'
 export const UsuarioContext = createContext({});
+import axios from 'axios';
 
 const url = "https://backendmobile-j6vq.vercel.app/usuarios/";
 
@@ -32,18 +33,66 @@ export default function UsuarioProvider({ children }) {
         }
     }
 
+    function atualizaListaUsuarioEditado(response) {
+        console.log(response);
+        //ou usa-se a confirmacao pelo id retornado
+        //ou usa-se um response.status == 20x com um if
+        let id = response.data.identificador;
+        const { nome, email, altura, peso } = JSON.parse(response.config.data);
+        const index = usuarios.findIndex(item => item.id == id);
+
+        let users = usuarios;
+        users[index].nome = nome;
+        users[index].email = email;
+        users[index].altura = (altura ? altura : null);
+        users[index].peso = (peso ? peso : null);
+        setUsuarios(users);
+
+        let usuario = {};
+        usuario.id = id;
+        usuario.nome = nome;
+        usuario.email = email;
+        usuario.altura = altura;
+        usuario.peso = peso;
+        console.log(usuario);
+        setAtualizacao(usuario);
+    }
+
+    function atualizaListaUsuarioNovo(response) {
+        console.log("atualizaListaUsuarioNovo",
+            response.data);
+
+        let { id, nome, email, altura, peso } = response.data;
+        let obj = {
+            "id": id, "nome": nome, "email": email,
+            "altura": altura, "peso": peso
+        };
+        let users = usuarios;
+        users.push(obj);
+        setUsuarios(users);
+        setAtualizacao(obj);
+    }
+    function apagarUsuario(cod) {
+        axios.delete(url + cod)
+            .then(() => {
+                setUsuarios(usuarios.filter(item => item.id !== cod));
+            })
+            .catch((erro) => console.log(erro))
+    }
+
     const [id, setId] = useState("");
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [altura, setAltura] = useState("");
     const [peso, setPeso] = useState("");
     const [usuarios, setUsuarios] = useState([]);
+    const [atualizacao, setAtualizacao] = useState({});
 
     return (
         <UsuarioContext.Provider value={{
             id, nome, email, altura, peso, setId,
             setNome, setEmail, setAltura, setPeso,
-            buscarUsuarios, usuarios, setUsuarios, gravarDados
+            buscarUsuarios, usuarios, setUsuarios, gravarDados, atualizacao, apagarUsuario
         }} >
             {children}
         </UsuarioContext.Provider>

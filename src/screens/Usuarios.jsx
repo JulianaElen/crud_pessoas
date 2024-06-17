@@ -10,7 +10,7 @@ import { UsuarioContext } from '../context/UsuarioContext';
 
 export default function Usuarios(props) {
 
-    const {usuarios, buscarUsuarios} = useContext(UsuarioContext)
+    const {usuarios, buscarUsuarios, atualizacao, apagarUsuario} = useContext(UsuarioContext)
     
     useEffect(() => {
         buscarUsuarios();
@@ -20,6 +20,7 @@ export default function Usuarios(props) {
         <SafeAreaView>
             <FlatList
                 data={usuarios}
+                extraData={atualizacao}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                     <ListItem bottomDivider>
@@ -32,7 +33,7 @@ export default function Usuarios(props) {
                                 <ListItem.ButtonGroup
                                     buttons={[
                                         <Icon name='edit' size={20} color={'blue'} onPress={() => props.navigation.navigate("Detalhe", {item})} />,
-                                        <Icon name='trash-can' size={20} color={'red'} onPress={() => Alert.alert("teste")} />
+                                        <Icon name='trash-can' size={20} color={'red'} onPress={ () => apagarUsuario(item.id)} />
                                     ]}
                                 />
                             </View>
